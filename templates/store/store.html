@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block title %}GreatKart | Store{% endblock %}
+
 {% block content %}
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
@@ -129,7 +132,7 @@
                     <div class="col-md-4">
                         <figure class="card card-product-grid">
                             <div class="img-wrap">
-                                <img src="{{ item.image.url }}">
+                                <a href="{{ item.get_absolute_url }}"><img src="{{ item.image.url }}"></a>
 
                             </div> <!-- img-wrap.// -->
                             <figcaption class="info-wrap">
@@ -139,7 +142,7 @@
                                         <span class="price">${{ item.price }}</span>
                                     </div> <!-- price-wrap.// -->
                                 </div>
-                                <a href="#" class="btn btn-block btn-primary">Add to cart </a>
+                                <a href="{% url 'add_cart' item.id %}" class="btn btn-block btn-primary">Add to cart </a>
                             </figcaption>
                         </figure>
                     </div> <!-- col.// -->
