@@ -1,4 +1,3 @@
-from ast import keyword
 from django.http import HttpResponse
 from django.shortcuts import render,get_object_or_404
 from .models import Product
@@ -65,8 +64,8 @@ def product_detail(request,category_slug,product_slug):
 
 
 def search(request):
-    if 'keyword' in request.GET:
-        keyword = request.GET['keyword']
+    if request.method == 'POST':
+        keyword = request.POST['keyword']
         if keyword:
             products = Product.objects.order_by('-created_date').filter(Q(description__icontains=keyword)|Q(product_name__icontains=keyword))
             products_count = products.count()
