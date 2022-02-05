@@ -8,7 +8,7 @@
 
     {% if request.GET.command == 'verification' %}
     <div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 1024px; margin-top:100px;">
-        Thank you for registrering with us.We have sent you a verification email to your email address {{request.GET.email}}.Please verify it to have access.<br><br>
+        Thank you for registrering with us.We have sent you a verification email to your email address [{{request.GET.email}}].Please verify it to have access.<br><br>
         Already verified ? <a href="{% url 'login' %}">Login</a>
     </div>
     {% else %}

@@ -91,6 +91,7 @@ def activate(request,uidb64,token):
         return redirect('login')
     else:
         messages.error(request,'Invalid activation link')
+        user.delete()
         return redirect('register')
 
 
