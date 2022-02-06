@@ -52,8 +52,12 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block"> Register </button>
                 </div> <!-- form-group// -->
-                {{ form.email.errors }}
-                {{ form.non_field_errors }}
+                {% if form.errors or form.non_field_errors %}
+                <div class="alert alert-danger " role="alert">
+                    {{ form.email.errors }}
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
             </form>
         </article><!-- card-body.// -->
     </div> <!-- card .// -->
