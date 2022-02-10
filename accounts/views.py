@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render
+from rx import from_marbles
 from accounts.forms import RegistrationForm
 from carts.models import Cart,CartItem
 from .models import Account
@@ -14,6 +15,7 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
 from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
 
 
 def register(request):

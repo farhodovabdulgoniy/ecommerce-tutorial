@@ -36,14 +36,25 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
     'django_cleanup.apps.CleanupConfig',
+    #########################
+    'allauth.socialaccount.providers.google',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    #########################
     'category',
     'accounts',
     'store',
     'carts',
     'orders',
 ]
+
+
+SITE_ID = 1
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -137,6 +148,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR:'danger',
@@ -150,3 +162,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'farhodovabdulgoniy@gmail.com'
 EMAIL_HOST_PASSWORD = 'abdu2105'
 EMAIL_USE_TLS = True
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
