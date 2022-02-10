@@ -1,10 +1,9 @@
-from django.http import HttpResponse
 from django.shortcuts import render,get_object_or_404
 from .models import Product
 from category.models import Category
-from carts.models import Cart,CartItem
+from carts.models import CartItem
 from carts.views import _cart_id
-from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 
