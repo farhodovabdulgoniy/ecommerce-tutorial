@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from rx import from_marbles
+from webob import minute
 from accounts.forms import RegistrationForm
 from carts.models import Cart,CartItem
 from .models import Account
@@ -7,6 +7,7 @@ from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required
 from carts.views import _cart_id
 import requests
+from datetime import datetime, timedelta
 
 #Verification email
 from django.contrib.sites.shortcuts import get_current_site
@@ -15,7 +16,6 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
 
 
 def register(request):
@@ -46,7 +46,6 @@ def register(request):
             to_email = email
             send_email = EmailMessage(mail_subject,message,to=[to_email])
             send_email.send()
-            # messages.success(request,'Thank you for registrering with us.We have sent you a verification email to your email address.Please verify it to have access.')
             return redirect('/accounts/login/?command=verification&email='+email)
 
     else:
@@ -169,7 +168,7 @@ def forgotPassword(request):
             to_email = email
             send_email = EmailMessage(mail_subject,message,to=[to_email])
             send_email.send()
-            messages.success(request,'Password Reset email has been sent to your email address.')
+            messages.success(request,'Password Reset has been sent to your email address.')
             return redirect('login')
         else:
             messages.error(request,'Account does not exist')
@@ -209,3 +208,4 @@ def resetPassword(request):
             return redirect('resetPassword')
     else:        
         return render(request,'accounts/resetPassword.html')
+
