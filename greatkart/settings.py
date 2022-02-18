@@ -33,6 +33,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     #########################
+    'paymeuz',
+    'rest_framework',
+    #############################
     'category',
     'accounts',
     'store',
@@ -40,8 +43,18 @@ INSTALLED_APPS = [
     'orders',
 ]
 
+PAYME_SETTINGS = {
+    'DEBUG':True,   #True - test mode, False - production mode
+    'ID':'620e4455ac7ec6362e3e891e',  
+    'SECRET_KEY':'CKQU@tJiENkSuWCyNn9en5jTW2rBq5teZjdC',
+    'ACCOUNTS':{
+        'KEY_1':'order_id',
+        'KEY_2':'',
+    }
+}
 
-SITE_ID = 1
+
+
 
 
 MIDDLEWARE = [
@@ -157,3 +170,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+
+SITE_ID = 1
