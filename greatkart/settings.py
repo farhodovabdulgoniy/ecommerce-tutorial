@@ -35,26 +35,25 @@ INSTALLED_APPS = [
     #########################
     'paymeuz',
     'rest_framework',
+    'my_payme',
     #############################
     'category',
     'accounts',
     'store',
-    'carts',
+    'carts',    
     'orders',
 ]
 
+
 PAYME_SETTINGS = {
-    'DEBUG':True,   #True - test mode, False - production mode
-    'ID':'620e4455ac7ec6362e3e891e',  
-    'SECRET_KEY':'CKQU@tJiENkSuWCyNn9en5jTW2rBq5teZjdC',
-    'ACCOUNTS':{
-        'KEY_1':'order_id',
-        'KEY_2':'',
+    'DEBUG': False,  # True - test mode, False - production mode
+    'ID': '604b0885b04e9b6f30a9f9aa',
+    'SECRET_KEY': 'AcBFnxpXE&8f9#7gbIrUXse1Ntx&mrIgOTMN',
+    'ACCOUNTS': {
+        'KEY_1': 'order_id',
+        'KEY_2': '',
     }
 }
-
-
-
 
 
 MIDDLEWARE = [
@@ -166,6 +165,7 @@ EMAIL_HOST_PASSWORD = 'abdu2105'
 EMAIL_USE_TLS = True
 
 
+######################## GOOGLE AUTH ########################################
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',

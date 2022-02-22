@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="order-details" style="width: 60%;margin: auto;">
+    <center><h3 class="title mt-3">Your Order</h3></center>
+    <div class="order-table table-responsive mt-3">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cart_item in cart_items %}
+                <tr>
+                    <td class="order-subtotal">
+                        <span>{{ cart_item.product.product_name }}</span>
+                    </td>
+                    <td class="order-subtotal-price">
+                        <span class="order-subtotal-amount" id="price">{{ grand_total }} Sums</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-lg-6 col-md-6">
+        <div class="form-group">
+            <label>Card Number<span class="required">*</span></label>
+            <div class="select-box">
+                <input type="text" placeholder="XXXX-XXXX-XXXX-XXXX" name="number" id="number" class="form-control">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6">
+        <div class="form-group">
+            <label>expire<span class="required">*</span></label>
+            <div class="select-box">
+                <input type="text" placeholder="00/00" name="expire" id="expire" class="form-control">
+            </div>
+        </div>
+    </div>
+    <div class="payment-box">
+        <button class="default-btn btn btn-primary" onclick="cardcreate()">Submit</button>
+        <br>
+        <br>
+        <div class="col-lg-6 col-md-6">
+            <div class="form-group">
+                <label>Verify Code<span class="required">*</span></label>
+                <div class="select-box">
+                    <input type="text" placeholder="******" name="expire" id="code">
+                </div>
+                <button class="default-btn" onclick="checkcode()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.0-rc.1/dist/js.cookie.min.js"></script>
+<script type="text/javascript">
+    let csrftoken = Cookies.get('csrftoken');
+    let price = document.getElementById('price').value;
+
+    let token = undefined
+    function cardcreate() {
+        let number = document.getElementById('number').value;
+        let expire = document.getElementById('expire').value;
+        var cardData = {
+            "id": 123,
+            "params": {
+                "card": { "number": number, "expire": expire },
+                "amount": parseInt(`${price.replace(".", "")}`),
+                "save": true
+            }
+        }
+
+
+        fetch("http://127.0.0.1:8000/payme/card/create/", {
+            method: "POST",
+            body: JSON.stringify(cardData),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrftoken
+            },
+
+        }
+        )
+            .then((response) => response.json())
+            .then((json) => {
+                token = json.token
+            })
+    }
+
+    function checkcode() {
+        var code = document.getElementById("code").value;
+
+        let _data = {
+            id: 123,
+            params: {
+                token: token,
+                code: code,
+            },
+        };
+
+        fetch("http://127.0.0.1:8000/en/api/payme/card/verify/", {
+            method: "POST",
+            body: JSON.stringify(_data),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "X-CSRFToken": csrftoken
+            },
+
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                data = {
+                    id: 123,
+                    params: {
+                        token: token,
+                        amount: parseInt(`${price.replace(".", "")}`),
+                        account: {
+                            order_id: 1,
+                        },
+                    },
+                };
+
+                fetch(
+                    "http://127.0.0.1:8000/en/api/payme/payment/",
+                    {
+                        method: "POST",
+                        body: JSON.stringify(data),
+                        headers: {
+                            "Content-type":
+                                "application/json; charset=UTF-8",
+                            "X-CSRFToken": csrftoken
+                        },
+                    }
+                )
+                    .then((response) => response.json())
+                    .then((json) => {
+                        console.log(json)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            })
+            .catch((err) => console.log(err));
+    }
+</script>
+
+{% endblock %}
