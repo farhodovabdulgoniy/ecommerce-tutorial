@@ -1,5 +1,4 @@
 from django.shortcuts import redirect, render
-from webob import minute
 from accounts.forms import RegistrationForm
 from carts.models import Cart,CartItem
 from .models import Account
