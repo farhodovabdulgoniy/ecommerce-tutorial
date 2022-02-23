@@ -6,7 +6,6 @@ from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required
 from carts.views import _cart_id
 import requests
-from datetime import datetime, timedelta
 
 #Verification email
 from django.contrib.sites.shortcuts import get_current_site
