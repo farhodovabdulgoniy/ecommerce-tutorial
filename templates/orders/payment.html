@@ -3,7 +3,9 @@
 
 {% block content %}
 <div class="order-details" style="width: 60%;margin: auto;">
-    <center><h3 class="title mt-3">Your Order</h3></center>
+    <center>
+        <h3 class="title mt-3">Your Order</h3>
+    </center>
     <div class="order-table table-responsive mt-3">
         <table class="table table-bordered">
             <thead>
@@ -19,7 +21,7 @@
                         <span>{{ cart_item.product.product_name }}</span>
                     </td>
                     <td class="order-subtotal-price">
-                        <span class="order-subtotal-amount" id="price">{{ grand_total }} Sums</span>
+                        <input class="order-subtotal-amount" id="price" value="{{ grand_total }}" disabled style="border: none;"> Sums</input>
                     </td>
                 </tr>
                 {% endfor %}
