@@ -18,10 +18,10 @@ class PaymentApiView(APIView):
         serializer = SubscribeSerializer(data=request.data, many=False)
         serializer.is_valid(raise_exception=True)
         token = serializer.validated_data['params']['token']
-        result = self.receipts_create(token, serializer.validated_data)
+        result = self.receipts_create(token, serializer.validated_data,request.user)
         return Response(result)
 
-    def receipts_create(self, token, validated_data):
+    def receipts_create(self, token, validated_data,user):
         print(validated_data)
         key_2 = validated_data['params']['account'][KEY_2] if KEY_2 else None
         data = dict(
@@ -45,14 +45,12 @@ class PaymentApiView(APIView):
             return result
 
         trans_id = result['result']['receipt']['_id']
-        trans = Transaction()
-        print(result)
-        trans.create_transaction(
+        Transaction.objects.create(
             trans_id=trans_id,
             request_id=result['id'],
             amount=result['result']['receipt']['amount'],
-            account=result['result']['receipt']['account'],
-            status=trans.PROCESS,
+            account=user,
+            status=0
         )
         result = self.receipts_pay(trans_id, token)
         return result

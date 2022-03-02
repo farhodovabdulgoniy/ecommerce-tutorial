@@ -6,65 +6,131 @@
     <center>
         <h3 class="title mt-3">Your Order</h3>
     </center>
-    <div class="order-table table-responsive mt-3">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Total</th>
+    <div class="order-table table-responsive mt-3 p-3" style="border: 1px solid #ced4da;">
+        <table class="table table-borderless table-shopping-cart">
+            <thead class="text-muted">
+                <tr class="small text-uppercase">
+                    <th scope="col">Product</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
                 </tr>
             </thead>
             <tbody>
                 {% for cart_item in cart_items %}
-                <tr>
-                    <td class="order-subtotal">
-                        <span>{{ cart_item.product.product_name }}</span>
+                <tr style="border-top:1px solid #ced4da ;">
+                    <td>
+                        <figure class="itemside align-items-center">
+                            <div class="aside">
+                                <img src="{{ cart_item.product.image.url }}" class="img-sm" />
+                            </div>
+                            <figcaption class="info">
+                                <a href="{{ cart_item.product.get_absolute_url }}"
+                                    class="title text-dark">{{cart_item.product.product_name }}</a>
+                                <p class="text-muted small">
+                                    {% if cart_item.variations.all %}
+                                    {% for item in cart_item.variations.all %}
+                                    {{ item.variation_category | capfirst }} : {{ item.variation_value|capfirst }}<br>
+                                    {% endfor %}
+                                    {% endif %}
+                                </p>
+                            </figcaption>
+                        </figure>
                     </td>
-                    <td class="order-subtotal-price">
-                        <input class="order-subtotal-amount" id="price" value="{{ grand_total }}" disabled style="border: none;"> Sums</input>
+                    <td>
+                        <!-- col.// -->
+                        <div class="col">
+                            <div class="input-group input-spinner">
+                                <div class="input-group-prepend">
+
+                                </div>
+                                <input type="text" class="form-control" style="background: none; border: none;"
+                                    value="{{ cart_item.quantity }}" disabled="true" />
+                                <div class="input-group-append">
+                                    {% for item in cart_item.variations.all %}
+                                    <input type="hidden" name="{{ item.variation_category | lower }}"
+                                        value="{{ item.variation_value | capfirst }}">
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                            <!-- input-group.// -->
+                        </div>
+                        <!-- col.// -->
                     </td>
+                    <td>
+                        <div class="price-wrap">
+                            <var class="price">{{ cart_item.sub_total }}</var>
+                            <small class="text-muted">
+                                {{ cart_item.product.price }} each
+                            </small>
+                        </div>
+                        <!-- price-wrap .// -->
+                    </td>
+
                 </tr>
                 {% endfor %}
+                <td></td>
+                <td></td>
+                <td><b>Total : </b><span id="price">{{ grand_total }}</span></td>
             </tbody>
         </table>
     </div>
-
-    <div class="col-lg-6 col-md-6">
-        <div class="form-group">
-            <label>Card Number<span class="required">*</span></label>
-            <div class="select-box">
-                <input type="text" placeholder="XXXX-XXXX-XXXX-XXXX" name="number" id="number" class="form-control">
-
-            </div>
+    <br>
+    <div class="card border-success text-center" id="success-box" style="display: none;">
+        <div class="card-body text-success">
+            <h5 class="card-title" id="successtext" style="margin: 0!important;">Code successfully sent to your phone
+            </h5>
         </div>
     </div>
-    <div class="col-lg-6 col-md-6">
-        <div class="form-group">
-            <label>expire<span class="required">*</span></label>
-            <div class="select-box">
-                <input type="text" placeholder="00/00" name="expire" id="expire" class="form-control">
+    <br>
+    <div class="card border-danger text-center" id="error-box" style="display: none;">
+        <div class="card-body text-danger">
+            <h5 class="card-title" id="error" style="margin: 0!important;"></h5>
+        </div>
+    </div>
+    <br>
+    <div id="credit-card">
+        <div class="col-lg-6 col-md-6">
+            <div class="form-group">
+                <label>Card Number<span class="required">*</span></label>
+                <div class="select-box">
+                    <input type="number" placeholder="XXXX-XXXX-XXXX-XXXX" name="number" id="number"
+                        class="form-control">
+
+                </div>
             </div>
         </div>
+        <div class="col-lg-6 col-md-6">
+            <div class="form-group">
+                <label>expire<span class="required">*</span></label>
+                <div class="select-box">
+                    <input type="number" placeholder="00/00" name="expire" id="expire" class="form-control">
+                </div>
+            </div>
+        </div>
+        <button class="default-btn btn btn-primary" onclick="cardcreate()">Submit</button>
     </div>
     <div class="payment-box">
-        <button class="default-btn btn btn-primary" onclick="cardcreate()">Submit</button>
+
         <br>
-        <br>
-        <div class="col-lg-6 col-md-6">
+        <div class="col-lg-6 col-md-6" id="verify" style="display: none;">
             <div class="form-group">
                 <label>Verify Code<span class="required">*</span></label>
                 <div class="select-box">
-                    <input type="text" placeholder="******" name="expire" id="code">
+                    <input type="text" placeholder="******" class="form-control" name="expire" id="code">
                 </div>
-                <button class="default-btn" onclick="checkcode()">Submit</button>
+                <br>
+                <button class="btn btn-primary" onclick="checkcode()">Submit</button>
             </div>
         </div>
+        <br>
+
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.0-rc.1/dist/js.cookie.min.js"></script>
 <script type="text/javascript">
     let csrftoken = Cookies.get('csrftoken');
-    let price = document.getElementById('price').value;
+    let price = document.getElementById('price').innerHTML;
 
     let token = undefined
     function cardcreate() {
@@ -74,7 +140,7 @@
             "id": 123,
             "params": {
                 "card": { "number": number, "expire": expire },
-                "amount": parseInt(`${price.replace(".", "")}`),
+                "amount": parseInt(`${price.replace(".", "")}0`),
                 "save": true
             }
         }
@@ -93,6 +159,16 @@
             .then((response) => response.json())
             .then((json) => {
                 token = json.token
+                if (json.error) {
+                    document.getElementById("error-box").style.display = "block";
+                    document.getElementById("error").innerHTML = json.error.message
+                }
+                else {
+                    document.getElementById("success-box").style.display = "block";
+                    document.getElementById("credit-card").style.display = "none";
+                    document.getElementById("verify").style.display = "block";
+                    document.getElementById("error-box").style.display = "none";
+                }
             })
     }
 
@@ -107,7 +183,7 @@
             },
         };
 
-        fetch("http://127.0.0.1:8000/en/api/payme/card/verify/", {
+        fetch("http://127.0.0.1:8000/payme/card/verify/", {
             method: "POST",
             body: JSON.stringify(_data),
             headers: {
@@ -118,11 +194,21 @@
         })
             .then((response) => response.json())
             .then((json) => {
+                if (json.error) {
+                    document.getElementById("error-box").style.display = "block";
+                    document.getElementById("error").innerHTML = json.error.message
+                }
+                else {
+
+                    document.getElementById("credit-card").style.display = "none";
+                    document.getElementById("verify").style.display = "none";
+                }
+
                 data = {
                     id: 123,
                     params: {
                         token: token,
-                        amount: parseInt(`${price.replace(".", "")}`),
+                        amount: parseInt(`${price.replace(".", "")}0`),
                         account: {
                             order_id: 1,
                         },
@@ -130,7 +216,7 @@
                 };
 
                 fetch(
-                    "http://127.0.0.1:8000/en/api/payme/payment/",
+                    "http://127.0.0.1:8000/payme/payment/",
                     {
                         method: "POST",
                         body: JSON.stringify(data),
@@ -143,7 +229,17 @@
                 )
                     .then((response) => response.json())
                     .then((json) => {
-                        console.log(json)
+                        if (json.error) {
+                            document.getElementById("error-box").style.display = "block";
+                            document.getElementById("error").innerHTML = json.error.message
+                            document.getElementById("success-box").style.display = "none";
+                        }
+                        else {
+                            document.getElementById("success-box").style.display = "block";
+                            document.getElementById("successtext").innerHTML = "Payment succed!";
+                            document.getElementById("error-box").style.display = "none";
+                            setInterval(function() {window.location.replace('/')}, 2500);
+                        }
                     })
                     .catch(err => {
                         console.log(err)
@@ -152,5 +248,13 @@
             .catch((err) => console.log(err));
     }
 </script>
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
 
 {% endblock %}
